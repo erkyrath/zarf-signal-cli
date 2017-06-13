@@ -53,7 +53,7 @@ function sendmessage(str) {
         return;
     }
 
-    setTimeout(gotmessage, 1000, str, address);
+    client.sendMessage(address, str);
 }
 
 function gotmessage(str, sender) {
@@ -93,6 +93,8 @@ server.listen({ host:'localhost', port:localport }, () => {
 
 client.on('message', (ev) => {
     console.log('received message from', ev.data.source, ev.data);
+    gotmessage(ev.data.message.body, ev.data.source);
+    //### ev.data.attachments?
 });
  
 client.on('sent', (ev) => {
