@@ -37,18 +37,45 @@ function accept_connection(conn) {
 }
 
 function sendmessage(str) {
-    setTimeout(gotmessage, 1000, str, '+12345');
+    var address = null;
+
+    var match = str.match('^([+][0-9]+)(.*)$');
+    if (match) {
+        address = match[1].trim();
+        str = match[2].trim();
+    }
+    else {
+        address = lastaddress;
+    }
+
+    if (!address) {
+        gotmessage('no current address', null);
+        return;
+    }
+
+    setTimeout(gotmessage, 1000, str, address);
 }
 
 function gotmessage(str, sender) {
+    var line;
+
+    if (sender) {
+        lastaddress = sender;
+        line = sender + ' ' + str + '\n';
+    }
+    else {
+        sender = '';
+        line = '[' + str + ']\n';
+    }
+
     if (!connections.length) {
         var proc = child_process.execFile('terminal-notifier', [ '-title', 'Signal', '-subtitle', sender ]);
-        proc.stdin.write(str+'\n');
+        proc.stdin.write(line);
         proc.stdin.end();
     }
     else {
         for (var conn of connections) {
-            conn.write(str+'\n');
+            conn.write(line);
         }
     }
 }
