@@ -78,7 +78,7 @@ function gotmessage(str, sender) {
     if (!connections.length) {
         cachedmessages.push(line);
         var proc = child_process.execFile('terminal-notifier', [ '-title', 'Signal', '-subtitle', sender ]);
-        proc.stdin.write(line);
+        proc.stdin.write(str+'\n');
         proc.stdin.end();
     }
     else {
