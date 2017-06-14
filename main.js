@@ -102,7 +102,8 @@ server.listen({ host:'localhost', port:localport }, () => {
 client.on('message', (ev) => {
     console.log('received message from', ev.data.source, ev.data);
     gotmessage(ev.data.message.body, ev.data.source);
-    //### ev.data.attachments?
+    //### ev.data.message.attachments?
+    //### contains contentType, data (ArrayBuffer)
 });
  
 client.on('sent', (ev) => {
