@@ -8,6 +8,8 @@ if (process.argv.length >= 3)
 
 const client = new SignalClient('zarf-signal-cli');
 var connections = [];
+var lastaddress = null;
+var cachedmessages = [];
 
 function accept_connection(conn) {
     console.log('client connected');
@@ -34,12 +36,17 @@ function accept_connection(conn) {
             inbuf = inbuf.slice(pos+1);
         }
     });
+
+    for (var line of cachedmessages) {
+        conn.write(line);
+    }
+    cachedmessages.length = 0;
 }
 
 function sendmessage(str) {
     var address = null;
 
-    var match = str.match('^([+][0-9]+)(.*)$');
+    var match = str.match('^([+][0-9][0-9][0-9][0-9][0-9]+)(.*)$');
     if (match) {
         address = match[1].trim();
         str = match[2].trim();
@@ -69,6 +76,7 @@ function gotmessage(str, sender) {
     }
 
     if (!connections.length) {
+        cachedmessages.push(line);
         var proc = child_process.execFile('terminal-notifier', [ '-title', 'Signal', '-subtitle', sender ]);
         proc.stdin.write(line);
         proc.stdin.end();
