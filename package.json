@@ -1,7 +1,7 @@
 {
   "name": "zarf-signal-cli",
   "version": "1.0.0",
-  "description": "Testing a command-line Signal client",
+  "description": "Relay Signal messages to a local socket",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
